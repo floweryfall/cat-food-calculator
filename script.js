@@ -29,16 +29,18 @@ function calcFood(months, weight, food) {
 document.getElementById("calcForm").addEventListener("submit", function (event) {
     event.preventDefault()
 
-    const resultEl = document.getElementById("result-total")
-    const resultPerEl = document.getElementById("result-per-time")
+    const resultTotal = document.getElementById("result-total")
+    const resultPerTime = document.getElementById("result-per-time")
+    const resultWarning = document.getElementById("result-warning")
 
     const monthsRaw = document.getElementById("months").value
     const weightRaw = document.getElementById("weight").value
 
     // バリデーション
     if (monthsRaw === "" || weightRaw === "") {
-        resultEl.innerHTML = "<strong>月齢と体重を入力してください</strong>"
-        resultPerEl.innerHTML = ""
+        resultWarning.innerHTML = "<b>月齢</b>と<b>体重</b>を入力してください"
+        resultPerTime.innerHTML = ""
+        resultTotal.innerHTML = ""
         return
     }
 
@@ -50,10 +52,11 @@ document.getElementById("calcForm").addEventListener("submit", function (event) 
     const result = calcFood(months, weight, food)
 
     if (result === -1) {
-        resultEl.innerHTML = "この月齢には対応していません"
-        resultPerEl.innerHTML = ""
+        resultWarning.innerHTML = "この月齢には対応していません"
+        resultPerTime.innerHTML = ""
+        resultTotal.innerHTML = ""
     } else {
-        resultEl.innerHTML = `1日にあげる餌は <strong>約${result}g</strong> です`
-        resultPerEl.innerHTML = `1回にあげる餌は <strong>約${Math.round(result / times)}g</strong> です`
+        resultPerTime.innerHTML = `約<b>${Math.round(result / times)}</b>g`
+        resultTotal.innerHTML = `約<b>${result}</b>g`
     }
 })
