@@ -31,46 +31,62 @@
             <section>
                 <div class=grid>
                     <div>
-                        <label for="months">月齢（○ヶ月）</label>
-                        <input autocomplete="off" autofocus id="months" max="12" min="0" name="months" type="number">
-                        <small><b>0-12</b>の整数を入力してください</small>
+                        <label for="age">年齢（○歳の部分）</label>
+                        <input autocomplete="off" autofocus id="age" max="30" min="0" name="age" type="number">
+                        <small><b>0-30</b>の整数を入力</small>
+                    </div>
+
+                    <div>
+                        <label for="months">年齢（○ヶ月の部分）</label>
+                        <input autocomplete="off" id="months" max="11" min="0" name="months" type="number" value="0">
+                        <small><b>0-11</b>の整数を入力 1歳以上の場合は0と入力</small>
                     </div>
 
                     <div>
                         <label for="weight">体重（○kg）</label>
-                        <input autocomplete="off" id="weight" max="10.0" min="0.0" name="weight" step="0.1"
+                        <input autocomplete="off" id="weight" max="20.0" min="0.1" name="weight" step="0.1"
                             type="number">
-                        <small><b>0-10</b>の小数第一位までの小数を入力してください</small>
+                        <small><b>0.1-20.0</b>の小数第一位までの小数を入力</small>
                     </div>
                 </div>
-            </section>
 
-            <section>
                 <fieldset>
-                    <legend>餌</legend>
+                    <legend>猫の状態</legend>
                     <div class=grid>
-                        <label for="wet_tuna">
-                            <input type="radio" id="wet_tuna" name="food" value="wet_tuna" checked>
-                            カルカン パウチ 12ヵ月までの子ねこ用 まぐろ
-                            <a href="https://kalkan.jp/products/kitten/pouch-jelly-maguro.html" class="secondary"
-                                target="_blank">
-                                商品ページ
-                            </a>
+                        <label for="default">
+                            <input type="radio" id="status-default" name="status" value="default" checked>
+                            通常
                         </label>
-
-                        <label for="dry">
-                            <input type="radio" id="dry" name="food" value="dry">
-                            ビューティープロ ビューティープロ キャット 子猫用 12ヵ月頃まで フィッシュ味
-                            <a href="https://www.npf.co.jp/beautypro/cat/lineup/kitten/index.html" class="secondary"
-                                target="_blank">
-                                商品ページ
-                            </a>
+                        <label for="pregnancy">
+                            <input type="radio" id="status-pregnancy" name="status" value="pregnancy">
+                            妊娠期
+                        </label>
+                        <label for="nursing">
+                            <input type="radio" id="status-nursing" name="status" value="nursing">
+                            授乳期
                         </label>
                     </div>
                 </fieldset>
             </section>
 
             <section>
+                <label for="food">餌</label>
+                <select name="food" aria-label="餌を選んでください" id="food" required>
+                    <option selected disabled id="unselected" value="unselected">
+                        餌を選んでください
+                    </option>
+                    <option id="neko_genki_fish_mix_dry" value="neko_genki_fish_mix_dry">
+                        ユニ･チャーム ねこ元気 ねこ元気 お魚ミックス
+                    </option>
+                    <option id="kalkan_tuna_wet_kitten" value="kalkan_tuna_wet_kitten">
+                        カルカン パウチ 12ヵ月までの子ねこ用 まぐろ
+                    </option>
+                    <option id="beauty_pro_dry_kitten" value="beauty_pro_dry_kitten">
+                        ビューティープロ ビューティープロ キャット 子猫用 12ヵ月頃まで フィッシュ味
+                    </option>
+                </select>
+                <small><a id="food-link" href="#" target="_blank" rel="noopener noreferrer" hidden>商品ページ</a></small>
+
                 <fieldset>
                     <legend>1日に餌をあげる回数</legend>
                     <div class=grid>
@@ -97,8 +113,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th scope="col"><b>1回</b>にあげる餌</th>
-                        <th scope="col"><b>1日</b>にあげる餌</th>
+                        <th scope="col"><b>1回</b>にあげる餌の量</th>
+                        <th scope="col"><b>1日</b>にあげる餌の量</th>
                     </tr>
                 </thead>
                 <tbody>
