@@ -1,21 +1,26 @@
 // 計算
 function calcFood(age, months, weight, status, food) {
   let results = [];
+  let isKitten = age == 0 || (age == 1 && months == 0);
 
-  if (food === "neko_genki_fish_mix_dry") {
-    results = calcNekoGenkiFishMixDry(age, months, weight);
-  } else if (food === "kalkan_tuna_wet_kitten") {
-    if (age == 0 || (age == 1 && months == 0)) {
-      results[0] = calcKalkanTunaWetKitten(months, weight);
-      results[1] = -1;
-    }
-  } else if (food === "beauty_pro_dry_kitten") {
-    if (age == 0 || (age == 1 && months == 0)) {
-      results[0] = calcBeautyProDryKitten(months, weight);
-      results[1] = -1;
-    }
-  } else {
-    results = [-1, -1];
+  switch (food) {
+    case "neko_genki_fish_mix_dry":
+      results = calcNekoGenkiFishMixDry(age, months, weight);
+      break;
+    case "kalkan_tuna_wet_kitten":
+      if (isKitten) {
+        results[0] = calcKalkanTunaWetKitten(months, weight);
+        results[1] = -1;
+      }
+      break;
+    case "beauty_pro_dry_kitten":
+      if (isKitten) {
+        results[0] = calcBeautyProDryKitten(months, weight);
+        results[1] = -1;
+      }
+      break;
+    default:
+      results = [-1, -1];
   }
   return results;
 }
