@@ -1,121 +1,193 @@
 <!doctype html>
 <html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="猫の餌の量を計算します。">
-    <meta name="robots" content="noindex,nofollow">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="猫の餌の量を計算します。" />
+    <meta name="robots" content="noindex,nofollow" />
     <title>Cat Food Calculator</title>
 
     <!-- pico.css -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="custom.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="custom.css" />
 
     <!-- Noto Sans JP -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-</head>
-
-<body>
+  <body>
     <header class="container">
-        <h1>Cat Food Calculator</h1>
-        <p>猫の餌の量を計算します。</p>
+      <h1>Cat Food Calculator</h1>
+      <p>猫の餌の量を計算します。</p>
     </header>
 
     <main class="container">
-        <h2>入力</h2>
-        <form id="calcForm">
-            <section>
-                <div class=grid>
-                    <div>
-                        <label for="months">月齢（○ヶ月）</label>
-                        <input autocomplete="off" autofocus id="months" max="12" min="0" name="months" type="number">
-                        <small><b>0-12</b>の整数を入力してください</small>
-                    </div>
-
-                    <div>
-                        <label for="weight">体重（○kg）</label>
-                        <input autocomplete="off" id="weight" max="10.0" min="0.0" name="weight" step="0.1"
-                            type="number">
-                        <small><b>0-10</b>の小数第一位までの小数を入力してください</small>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <fieldset>
-                    <legend>餌</legend>
-                    <div class=grid>
-                        <label for="wet_tuna">
-                            <input type="radio" id="wet_tuna" name="food" value="wet_tuna" checked>
-                            カルカン パウチ 12ヵ月までの子ねこ用 まぐろ
-                            <a href="https://kalkan.jp/products/kitten/pouch-jelly-maguro.html" class="secondary"
-                                target="_blank">
-                                商品ページ
-                            </a>
-                        </label>
-
-                        <label for="dry">
-                            <input type="radio" id="dry" name="food" value="dry">
-                            ビューティープロ ビューティープロ キャット 子猫用 12ヵ月頃まで フィッシュ味
-                            <a href="https://www.npf.co.jp/beautypro/cat/lineup/kitten/index.html" class="secondary"
-                                target="_blank">
-                                商品ページ
-                            </a>
-                        </label>
-                    </div>
-                </fieldset>
-            </section>
-
-            <section>
-                <fieldset>
-                    <legend>1日に餌をあげる回数</legend>
-                    <div class=grid>
-                        <label>
-                            <input type="radio" name="times" value="2" checked>2回
-                        </label>
-                        <label>
-                            <input type="radio" name="times" value="3">3回
-                        </label>
-                        <label>
-                            <input type="radio" name="times" value="4">4回
-                        </label>
-                    </div>
-                </fieldset>
-            </section>
-
-            <button type="submit">計算する</button>
-        </form>
-
-        <!-- 結果の表示欄 -->
+      <h2>入力</h2>
+      <form id="calcForm">
         <section>
-            <h2>計算結果</h2>
-            <p id="result-warning"></p>
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col"><b>1回</b>にあげる餌</th>
-                        <th scope="col"><b>1日</b>にあげる餌</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="result-per-time"></td>
-                        <td id="result-total"></td>
-                    </tr>
-                </tbody>
-            </table>
+          <div class="grid">
+            <div>
+              <label for="age">年齢（○歳の部分）</label>
+              <input
+                autocomplete="off"
+                autofocus
+                id="age"
+                max="30"
+                min="0"
+                name="age"
+                type="number"
+              />
+              <small><b>0-30</b>の整数を入力</small>
+            </div>
+
+            <div>
+              <label for="months">年齢（○ヶ月の部分）</label>
+              <input
+                autocomplete="off"
+                id="months"
+                max="11"
+                min="0"
+                name="months"
+                type="number"
+                value="0"
+              />
+              <small><b>0-11</b>の整数を入力 1歳以上の場合は0と入力</small>
+            </div>
+
+            <div>
+              <label for="weight">体重（○kg）</label>
+              <input
+                autocomplete="off"
+                id="weight"
+                max="20.0"
+                min="0.1"
+                name="weight"
+                step="0.1"
+                type="number"
+              />
+              <small><b>0.1-20.0</b>の小数第一位までの小数を入力</small>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>猫の状態</legend>
+            <div class="grid">
+              <label for="default">
+                <input
+                  type="radio"
+                  id="status-default"
+                  name="status"
+                  value="default"
+                  checked
+                />
+                通常
+              </label>
+              <label for="pregnancy">
+                <input
+                  type="radio"
+                  id="status-pregnancy"
+                  name="status"
+                  value="pregnancy"
+                />
+                妊娠期
+              </label>
+              <label for="nursing">
+                <input
+                  type="radio"
+                  id="status-nursing"
+                  name="status"
+                  value="nursing"
+                />
+                授乳期
+              </label>
+            </div>
+          </fieldset>
         </section>
+
+        <section>
+          <label for="food">餌</label>
+          <select
+            name="food"
+            aria-label="餌を選んでください"
+            id="food"
+            required
+          >
+            <option selected disabled id="unselected" value="unselected">
+              餌を選んでください
+            </option>
+            <option
+              id="neko_genki_fish_mix_dry"
+              value="neko_genki_fish_mix_dry"
+            >
+              ユニ･チャーム ねこ元気 ねこ元気 お魚ミックス
+            </option>
+            <option id="kalkan_tuna_wet_kitten" value="kalkan_tuna_wet_kitten">
+              カルカン パウチ 12ヵ月までの子ねこ用 まぐろ
+            </option>
+            <option id="beauty_pro_dry_kitten" value="beauty_pro_dry_kitten">
+              ビューティープロ ビューティープロ キャット 子猫用 12ヵ月頃まで
+              フィッシュ味
+            </option>
+          </select>
+          <small
+            ><a
+              id="food-link"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+              >商品ページ</a
+            ></small
+          >
+
+          <fieldset>
+            <legend>1日に餌をあげる回数</legend>
+            <div class="grid">
+              <label>
+                <input type="radio" name="times" value="2" checked />2回
+              </label>
+              <label> <input type="radio" name="times" value="3" />3回 </label>
+              <label> <input type="radio" name="times" value="4" />4回 </label>
+            </div>
+          </fieldset>
+        </section>
+
+        <button type="submit">計算する</button>
+      </form>
+
+      <!-- 結果の表示欄 -->
+      <section>
+        <h2>計算結果</h2>
+        <p id="result-warning"></p>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"><b>1回</b>にあげる餌の量</th>
+              <th scope="col"><b>1日</b>にあげる餌の量</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="result-per-time"></td>
+              <td id="result-total"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </main>
 
     <footer class="container">
-        <span>&copy; 2026 floweryfall</span>
+      <span>&copy; 2026 floweryfall</span>
     </footer>
 
     <script src="script.js" defer></script>
-</body>
-
+  </body>
 </html>
