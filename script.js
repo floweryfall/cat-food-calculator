@@ -105,7 +105,7 @@ function calcNekoGenkiFishMixDrySenior(age, weight, foodAmountPerWeight) {
   return results;
 }
 
-function calcKalkanTunaWetKitten(months, weight) {
+function calcKalkanTunaWetKitten(months) {
   if (2 <= months && months < 3) {
     return 309;
   } else if (3 <= months && months < 4) {
