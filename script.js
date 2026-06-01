@@ -123,7 +123,7 @@ function calcFood(
 
   // 結果が一つの値なら、値をfeedingAmounts[0]に格納しfeedingAmounts[1]に-1を代入する
   // 結果が範囲なら、最小値をfeedingAmounts[0]、最大値をfeedingAmounts[1]に代入する
-  let feedingAmounts = [];
+  let feedingAmounts;
   const isKitten = age == 0 || (age == 1 && months == 0);
 
   switch (food) {
@@ -133,12 +133,16 @@ function calcFood(
 
     case "kalkan_tuna_wet_kitten":
       if (isKitten) {
-        feedingAmounts = calcKalkanTunaWetKitten(months, weight);
+        feedingAmounts = calcKalkanTunaWetKitten(months);
+      } else {
+        feedingAmounts = [-1, -1];
       }
       break;
     case "beauty_pro_dry_kitten":
       if (isKitten) {
-        feedingAmounts = calcBeautyProDryKitten(months, weight);
+        feedingAmounts = calcBeautyProDryKitten(months);
+      } else {
+        feedingAmounts = [-1, -1];
       }
       break;
     default:
