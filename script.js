@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         resultTotal.innerHTML = "";
         return;
       } else if (monthsRaw === "") {
+        // 未入力時は0ヶ月とする
         monthsRaw = 0;
       }
 
@@ -77,11 +78,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         10,
       );
 
+      // バリデーション
+      if (food == "unselected") {
+        resultWarning.innerHTML = "<b>餌を選んでください</b>";
+        resultPerTime.innerHTML = "";
+        resultTotal.innerHTML = "";
+        return;
+      }
+
       const feedingAmounts = calcFood(age, months, weight, status, food);
 
       const minFeedingAmounts = feedingAmounts[0];
       const maxFeedingAmounts = feedingAmounts[1];
-      const average = Math.round((minFeedingAmounts + maxFeedingAmounts) / 2);
+      const average = Math.round((feedingAmounts[0] + feedingAmounts[1]) / 2);
 
       const minFeedingAmountsPerTime = Math.round(minFeedingAmounts / times);
       const maxFeedingAmountsPerTime = Math.round(maxFeedingAmounts / times);
@@ -89,19 +98,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         (minFeedingAmountsPerTime + maxFeedingAmountsPerTime) / 2,
       );
 
-      if (food == "unselected") {
-        resultWarning.innerHTML = "<b>餌を選んでください</b>";
-        resultPerTime.innerHTML = "";
-        resultTotal.innerHTML = "";
-      } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
+      if (feedingAmounts[0] == -1 && feedingAmounts[1] == -1) {
         resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
         resultPerTime.innerHTML = "";
         resultTotal.innerHTML = "";
-      } else if (maxFeedingAmounts == -1) {
+      } else if (feedingAmounts[1] == -1) {
+        // 値が1つの場合
         resultWarning.innerHTML = "";
         resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}</b>g`;
         resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
       } else {
+        // 値が範囲の場合
         resultWarning.innerHTML = "";
         resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}-${maxFeedingAmountsPerTime}</b>g（2値の平均は約<b>${averagePerTime}</b>g）`;
         resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g（2値の平均は約<b>${average}</b>g）`;
@@ -124,7 +131,7 @@ function calcFood(
   // 結果が一つの値なら、値をfeedingAmounts[0]に格納しfeedingAmounts[1]に-1を代入する
   // 結果が範囲なら、最小値をfeedingAmounts[0]、最大値をfeedingAmounts[1]に代入する
   let feedingAmounts;
-  const isKitten = age == 0 || (age == 1 && months == 0);
+  const isKitten = age == 0 || (age == 1 && months == 0); // 12ヶ月=1歳
 
   switch (food) {
     case "neko_genki_fish_mix_dry":
