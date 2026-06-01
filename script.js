@@ -78,8 +78,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
       const feedingAmounts = calcFood(age, months, weight, status, food);
+
       const minFeedingAmounts = feedingAmounts[0];
       const maxFeedingAmounts = feedingAmounts[1];
+      const average = Math.round((minFeedingAmounts + maxFeedingAmounts) / 2);
+
+      const minFeedingAmountsPerTime = Math.round(minFeedingAmounts / times);
+      const maxFeedingAmountsPerTime = Math.round(maxFeedingAmounts / times);
+      const averagePerTime = Math.round(
+        (minFeedingAmountsPerTime + maxFeedingAmountsPerTime) / 2,
+      );
 
       if (food == "unselected") {
         resultWarning.innerHTML = "<b>餌を選んでください</b>";
@@ -91,12 +99,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         resultTotal.innerHTML = "";
       } else if (maxFeedingAmounts == -1) {
         resultWarning.innerHTML = "";
-        resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
+        resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}</b>g`;
         resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
       } else {
         resultWarning.innerHTML = "";
-        resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
-        resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
+        resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}-${maxFeedingAmountsPerTime}</b>g（2値の平均は約<b>${averagePerTime}</b>g）`;
+        resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g（2値の平均は約<b>${average}</b>g）`;
       }
     });
 });
