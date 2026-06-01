@@ -1,4 +1,10 @@
-:root,
+:root {
+  --pico-font-family-sans-serif:
+    "Noto Sans JP", /* Japanese font */ system-ui, /* System */ "Segoe UI",
+    /* Windows */ Roboto, /* Android / Chrome OS */ Helvetica,
+    /* macOS */ Arial, sans-serif;
+}
+
 :host {
   --pico-font-size: 120%;
 }
