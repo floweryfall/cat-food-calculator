@@ -1,3 +1,101 @@
+// JSONを読み込む
+async function loadJson(path) {
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`読み込み失敗: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("JSONの読み込みエラー:", error);
+    return null;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const food_info = await loadJson("./food_info.json");
+  if (!food_info) return;
+
+  // 商品一覧に追加
+  const select = document.getElementById("food");
+
+  food_info.forEach((food) => {
+    const option = document.createElement("option");
+    option.value = food.id;
+    option.textContent = food.name;
+    select.appendChild(option);
+  });
+
+  // 選択商品が切り替わったとき
+  select.addEventListener("change", () => {
+    const selectedId = select.value;
+    // IDで商品を検索
+    const selectedFood = food_info.find((food) => food.id === selectedId);
+    const link = document.getElementById("food-link");
+
+    if (selectedFood && select.url) {
+      link.href = select.url;
+      link.removeAttribute("hidden");
+    } else {
+      link.href = "#";
+      link.setAttribute("hidden", "");
+    }
+
+    // 入力取得・表示
+    document
+      .getElementById("calcForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const resultTotal = document.getElementById("result-total");
+        const resultPerTime = document.getElementById("result-per-time");
+        const resultWarning = document.getElementById("result-warning");
+
+        const ageRaw = document.getElementById("age").value;
+        const monthsRaw = document.getElementById("months").value;
+        const weightRaw = document.getElementById("weight").value;
+
+        // バリデーション
+        if (ageRaw === "" || monthsRaw === "" || weightRaw === "") {
+          resultWarning.innerHTML = "<b>年齢と体重を入力してください</b>";
+          resultPerTime.innerHTML = "";
+          resultTotal.innerHTML = "";
+          return;
+        }
+
+        const age = parseInt(ageRaw, 10);
+        const months = parseInt(monthsRaw, 10);
+        const weight = parseFloat(weightRaw);
+        const status = document.querySelector(
+          'input[name="status"]:checked',
+        ).value;
+        const food = selectedFood.id;
+        const times = parseInt(
+          document.querySelector('input[name="times"]:checked').value,
+          10,
+        );
+
+        const feedingAmounts = calcFood(age, months, weight, status, food);
+        const minFeedingAmounts = feedingAmounts[0];
+        const maxFeedingAmounts = feedingAmounts[1];
+
+        if (food == "unselected") {
+          resultWarning.innerHTML = "<b>餌を選んでください</b>";
+          resultPerTime.innerHTML = "";
+          resultTotal.innerHTML = "";
+        } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
+          resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
+          resultPerTime.innerHTML = "";
+          resultTotal.innerHTML = "";
+        } else if (maxFeedingAmounts == -1) {
+          resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
+          resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
+        } else {
+          resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
+          resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
+        }
+      });
+  });
+});
+
 // 計算
 function calcFood(age, months, weight, status, food) {
   // 結果が一つの値なら、値をfeedingAmounts[0]に格納しfeedingAmounts[1]に-1を代入する
@@ -132,80 +230,3 @@ function calcBeautyProDryKitten(months, weight) {
     return [-1, -1];
   }
 }
-
-// 商品URL
-const foodUrls = {
-  neko_genki_fish_mix_dry:
-    "https://jp.unicharmpet.com/ja/products/cat/food-nekogenki-4520699678572.html",
-  kalkan_tuna_wet_kitten:
-    "https://kalkan.jp/products/kitten/pouch-jelly-maguro.html",
-  beauty_pro_dry_kitten:
-    "https://www.npf.co.jp/beautypro/cat/lineup/kitten/index.html",
-};
-
-// 商品URL表示
-document.getElementById("food").addEventListener("change", function () {
-  const link = document.getElementById("food-link");
-  const url = foodUrls[this.value];
-
-  if (url) {
-    link.href = url;
-    link.removeAttribute("hidden");
-  } else {
-    link.href = "#";
-    link.setAttribute("hidden", "");
-  }
-});
-
-// 入力取得・表示
-document
-  .getElementById("calcForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const resultTotal = document.getElementById("result-total");
-    const resultPerTime = document.getElementById("result-per-time");
-    const resultWarning = document.getElementById("result-warning");
-
-    const ageRaw = document.getElementById("age").value;
-    const monthsRaw = document.getElementById("months").value;
-    const weightRaw = document.getElementById("weight").value;
-
-    // バリデーション
-    if (ageRaw === "" || monthsRaw === "" || weightRaw === "") {
-      resultWarning.innerHTML = "<b>年齢と体重を入力してください</b>";
-      resultPerTime.innerHTML = "";
-      resultTotal.innerHTML = "";
-      return;
-    }
-
-    const age = parseInt(ageRaw, 10);
-    const months = parseInt(monthsRaw, 10);
-    const weight = parseFloat(weightRaw);
-    const status = document.querySelector('input[name="status"]:checked').value;
-    const food = document.getElementById("food").value;
-    const times = parseInt(
-      document.querySelector('input[name="times"]:checked').value,
-      10,
-    );
-
-    const feedingAmounts = calcFood(age, months, weight, status, food);
-    const minFeedingAmounts = feedingAmounts[0];
-    const maxFeedingAmounts = feedingAmounts[1];
-
-    if (food == "unselected") {
-      resultWarning.innerHTML = "<b>餌を選んでください</b>";
-      resultPerTime.innerHTML = "";
-      resultTotal.innerHTML = "";
-    } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
-      resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
-      resultPerTime.innerHTML = "";
-      resultTotal.innerHTML = "";
-    } else if (maxFeedingAmounts == -1) {
-      resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
-      resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
-    } else {
-      resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
-      resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
-    }
-  });
