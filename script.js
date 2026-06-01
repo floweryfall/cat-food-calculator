@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 商品一覧に追加
   const select = document.getElementById("food");
+  let selectedFood = null;
 
   food_info.forEach((food) => {
     const option = document.createElement("option");
@@ -28,76 +29,90 @@ document.addEventListener("DOMContentLoaded", async () => {
   select.addEventListener("change", () => {
     const selectedId = select.value;
     // IDで商品を検索
-    const selectedFood = food_info.find((food) => food.id === selectedId);
+    selectedFood = food_info.find((food) => food.id === selectedId);
     const link = document.getElementById("food-link");
 
-    if (selectedFood && select.url) {
-      link.href = select.url;
+    if (selectedFood && selectedFood.url) {
+      link.href = selectedFood.url;
       link.removeAttribute("hidden");
     } else {
       link.href = "#";
       link.setAttribute("hidden", "");
     }
-
-    // 入力取得・表示
-    document
-      .getElementById("calcForm")
-      .addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const resultTotal = document.getElementById("result-total");
-        const resultPerTime = document.getElementById("result-per-time");
-        const resultWarning = document.getElementById("result-warning");
-
-        const ageRaw = document.getElementById("age").value;
-        const monthsRaw = document.getElementById("months").value;
-        const weightRaw = document.getElementById("weight").value;
-
-        // バリデーション
-        if (ageRaw === "" || monthsRaw === "" || weightRaw === "") {
-          resultWarning.innerHTML = "<b>年齢と体重を入力してください</b>";
-          resultPerTime.innerHTML = "";
-          resultTotal.innerHTML = "";
-          return;
-        }
-
-        const age = parseInt(ageRaw, 10);
-        const months = parseInt(monthsRaw, 10);
-        const weight = parseFloat(weightRaw);
-        const status = document.querySelector(
-          'input[name="status"]:checked',
-        ).value;
-        const food = selectedFood.id;
-        const times = parseInt(
-          document.querySelector('input[name="times"]:checked').value,
-          10,
-        );
-
-        const feedingAmounts = calcFood(age, months, weight, status, food);
-        const minFeedingAmounts = feedingAmounts[0];
-        const maxFeedingAmounts = feedingAmounts[1];
-
-        if (food == "unselected") {
-          resultWarning.innerHTML = "<b>餌を選んでください</b>";
-          resultPerTime.innerHTML = "";
-          resultTotal.innerHTML = "";
-        } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
-          resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
-          resultPerTime.innerHTML = "";
-          resultTotal.innerHTML = "";
-        } else if (maxFeedingAmounts == -1) {
-          resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
-          resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
-        } else {
-          resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
-          resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
-        }
-      });
   });
+
+  // 入力取得・表示
+  document
+    .getElementById("calcForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const resultTotal = document.getElementById("result-total");
+      const resultPerTime = document.getElementById("result-per-time");
+      const resultWarning = document.getElementById("result-warning");
+
+      const ageRaw = document.getElementById("age").value;
+      let monthsRaw = document.getElementById("months").value;
+      const weightRaw = document.getElementById("weight").value;
+
+      // バリデーション
+      if (ageRaw === "" || weightRaw === "") {
+        resultWarning.innerHTML = "<b>年齢と体重を入力してください</b>";
+        resultPerTime.innerHTML = "";
+        resultTotal.innerHTML = "";
+        return;
+      } else if (monthsRaw === "") {
+        monthsRaw = 0;
+      }
+
+      const age = parseInt(ageRaw, 10);
+      const months = parseInt(monthsRaw, 10);
+      const weight = parseFloat(weightRaw);
+      const status = document.querySelector(
+        'input[name="status"]:checked',
+      ).value;
+      const food = selectedFood ? selectedFood.id : "unselected";
+      const times = parseInt(
+        document.querySelector('input[name="times"]:checked').value,
+        10,
+      );
+
+      const feedingAmounts = calcFood(age, months, weight, status, food);
+      const minFeedingAmounts = feedingAmounts[0];
+      const maxFeedingAmounts = feedingAmounts[1];
+
+      if (food == "unselected") {
+        resultWarning.innerHTML = "<b>餌を選んでください</b>";
+        resultPerTime.innerHTML = "";
+        resultTotal.innerHTML = "";
+      } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
+        resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
+        resultPerTime.innerHTML = "";
+        resultTotal.innerHTML = "";
+      } else if (maxFeedingAmounts == -1) {
+        resultWarning.innerHTML = "";
+        resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
+        resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
+      } else {
+        resultWarning.innerHTML = "";
+        resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
+        resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
+      }
+    });
 });
 
 // 計算
-function calcFood(age, months, weight, status, food) {
+function calcFood(
+  age = -1,
+  months = 0,
+  weight = -1,
+  status = "default",
+  food = "unselected",
+) {
+  if (age == -1 || weight == -1 || food == "unselected") {
+    return [-1, -1];
+  }
+
   // 結果が一つの値なら、値をfeedingAmounts[0]に格納しfeedingAmounts[1]に-1を代入する
   // 結果が範囲なら、最小値をfeedingAmounts[0]、最大値をfeedingAmounts[1]に代入する
   let feedingAmounts = [];
@@ -105,7 +120,7 @@ function calcFood(age, months, weight, status, food) {
 
   switch (food) {
     case "neko_genki_fish_mix_dry":
-      feedingAmounts = calcNekoGenkiFishMixDry(age, months, weight);
+      feedingAmounts = calcNekoGenkiFishMixDry(age, months, weight, status);
       break;
 
     case "kalkan_tuna_wet_kitten":
@@ -125,7 +140,7 @@ function calcFood(age, months, weight, status, food) {
   return feedingAmounts;
 }
 
-function calcNekoGenkiFishMixDry(age, months, weight) {
+function calcNekoGenkiFishMixDry(age, months, weight, status) {
   const foodAmountPerWeight = {
     2: [45, 65], // 2kg台、以下同様
     3: [65, 80],
