@@ -32,12 +32,12 @@
     </header>
 
     <main class="container">
-      <h3>入力</h3>
+      <h2>入力</h2>
       <form id="calcForm">
         <section>
           <div class="grid">
             <div>
-              <label for="age">年齢（○歳の部分）</label>
+              <label for="age">年齢<small>（○歳の部分）</small></label>
               <input
                 autocomplete="off"
                 autofocus
@@ -51,7 +51,7 @@
             </div>
 
             <div>
-              <label for="months">年齢（○ヶ月の部分）</label>
+              <label for="months">年齢<small>（○ヶ月の部分）</small></label>
               <input
                 autocomplete="off"
                 id="months"
@@ -61,11 +61,13 @@
                 type="number"
                 value="0"
               />
-              <small><b>0-11</b>の整数を入力 1歳以上の場合は0と入力</small>
+              <small
+                ><b>0-11</b>の整数を入力 分からない場合は<b>0</b>と入力</small
+              >
             </div>
 
             <div>
-              <label for="weight">体重（○kg）</label>
+              <label for="weight">体重<small>（○kg）</small></label>
               <input
                 autocomplete="off"
                 id="weight"
@@ -154,7 +156,7 @@
 
       <!-- 結果の表示欄 -->
       <section>
-        <h3>計算結果</h3>
+        <h2>計算結果</h2>
         <p id="result-warning"></p>
         <table>
           <thead>
@@ -174,7 +176,7 @@
     </main>
 
     <footer class="container">
-      <span>&copy; 2026 floweryfall</span>
+      <p>&copy; 2026 floweryfall</p>
     </footer>
 
     <script src="script.js" defer></script>
