@@ -1,33 +1,35 @@
 // 計算
 function calcFood(age, months, weight, status, food) {
-  let results = [];
-  let isKitten = age == 0 || (age == 1 && months == 0);
+  // 結果が一つの値なら、値をfeedingAmounts[0]に格納しfeedingAmounts[1]に-1を代入する
+  // 結果が範囲なら、最小値をfeedingAmounts[0]、最大値をfeedingAmounts[1]に代入する
+  let feedingAmounts = [];
+  const isKitten = age == 0 || (age == 1 && months == 0);
 
   switch (food) {
     case "neko_genki_fish_mix_dry":
-      results = calcNekoGenkiFishMixDry(age, months, weight);
+      feedingAmounts = calcNekoGenkiFishMixDry(age, months, weight);
       break;
+
     case "kalkan_tuna_wet_kitten":
       if (isKitten) {
-        results[0] = calcKalkanTunaWetKitten(months, weight);
-        results[1] = -1;
+        feedingAmounts = calcKalkanTunaWetKitten(months, weight);
       }
       break;
     case "beauty_pro_dry_kitten":
       if (isKitten) {
-        results[0] = calcBeautyProDryKitten(months, weight);
-        results[1] = -1;
+        feedingAmounts = calcBeautyProDryKitten(months, weight);
       }
       break;
     default:
-      results = [-1, -1];
+      feedingAmounts = [-1, -1];
   }
-  return results;
+
+  return feedingAmounts;
 }
 
 function calcNekoGenkiFishMixDry(age, months, weight) {
   const foodAmountPerWeight = {
-    2: [45, 65],
+    2: [45, 65], // 2kg台、以下同様
     3: [65, 80],
     4: [80, 95],
     5: [95, 110],
@@ -55,25 +57,25 @@ function calcNekoGenkiFishMixDry(age, months, weight) {
 }
 
 function calcNekoGenkiFishMixDryPregnancy(age, weight, foodAmountPerWeight) {
-  const max = 1.5;
-  const min = 1.2;
+  const minFeedingRate = 1.2;
+  const maxFeedingRate = 1.5;
 
-  let results = foodAmountPerWeight[Math.trunc(weight)];
-  results[0] *= min;
-  results[1] *= max;
+  let feedingAmounts = foodAmountPerWeight[Math.trunc(weight)];
+  feedingAmounts[0] *= minFeedingRate;
+  feedingAmounts[1] *= maxFeedingRate;
 
-  return results;
+  return feedingAmounts;
 }
 
 function calcNekoGenkiFishMixDryNursing(age, weight, foodAmountPerWeight) {
-  const max = 3;
-  const min = 2;
+  const minFeedingRate = 2;
+  const maxFeedingRate = 3;
 
-  let results = foodAmountPerWeight[Math.trunc(weight)];
-  results[0] *= min;
-  results[1] *= max;
+  let feedingAmounts = foodAmountPerWeight[Math.trunc(weight)];
+  feedingAmounts[0] *= minFeedingRate;
+  feedingAmounts[1] *= maxFeedingRate;
 
-  return results;
+  return feedingAmounts;
 }
 
 function calcNekoGenkiFishMixDryKitten(months) {
@@ -95,37 +97,39 @@ function calcNekoGenkiFishMixDryAdult(age, weight, foodAmountPerWeight) {
 }
 
 function calcNekoGenkiFishMixDrySenior(age, weight, foodAmountPerWeight) {
-  const max = 1;
-  const min = 0.8;
+  const minFeedingRate = 0.8;
+  const maxFeedingRate = 1;
 
-  let results = foodAmountPerWeight[Math.trunc(weight)];
-  results[0] *= min;
-  results[1] *= max;
+  let feedingAmounts = foodAmountPerWeight[Math.trunc(weight)];
+  feedingAmounts[0] *= minFeedingRate;
+  feedingAmounts[1] *= maxFeedingRate;
 
-  return results;
+  return feedingAmounts;
 }
 
 function calcKalkanTunaWetKitten(months) {
   if (2 <= months && months < 3) {
-    return 309;
+    return [309, -1];
   } else if (3 <= months && months < 4) {
-    return 369;
+    return [369, -1];
   } else if (4 <= months && months < 6) {
-    return 420;
+    return [420, -1];
   } else if (6 <= months && months <= 12) {
-    return 372;
+    return [372, -1];
   } else {
-    return -1;
+    return [-1, -1];
   }
 }
 
 function calcBeautyProDryKitten(months, weight) {
   if (1 <= months && months < 6) {
-    return weight * 30 + 35;
+    const feedingAmount = weight * 30 + 35;
+    return [feedingAmount, -1];
   } else if (6 <= months && months <= 12) {
-    return weight * 5 + 81;
+    const feedingAmount = weight * 5 + 81;
+    return [feedingAmount, -1];
   } else {
-    return -1;
+    return [-1, -1];
   }
 }
 
@@ -185,21 +189,23 @@ document
       10,
     );
 
-    const results = calcFood(age, months, weight, status, food);
+    const feedingAmounts = calcFood(age, months, weight, status, food);
+    const minFeedingAmounts = feedingAmounts[0];
+    const maxFeedingAmounts = feedingAmounts[1];
 
     if (food == "unselected") {
       resultWarning.innerHTML = "<b>餌を選んでください</b>";
       resultPerTime.innerHTML = "";
       resultTotal.innerHTML = "";
-    } else if (results[0] == -1 && results[1] == -1) {
+    } else if (minFeedingAmounts == -1 && maxFeedingAmounts == -1) {
       resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
       resultPerTime.innerHTML = "";
       resultTotal.innerHTML = "";
-    } else if (results[1] == -1) {
-      resultPerTime.innerHTML = `約<b>${Math.round(results[0] / times)}</b>g`;
-      resultTotal.innerHTML = `約<b>${results[0]}</b>g`;
+    } else if (maxFeedingAmounts == -1) {
+      resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}</b>g`;
+      resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
     } else {
-      resultPerTime.innerHTML = `約<b>${Math.round(results[0] / times)}-${Math.round(results[1] / times)}</b>g`;
-      resultTotal.innerHTML = `約<b>${results[0]}-${results[1]}</b>g`;
+      resultPerTime.innerHTML = `約<b>${Math.round(minFeedingAmounts / times)}-${Math.round(maxFeedingAmounts / times)}</b>g`;
+      resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g`;
     }
   });
