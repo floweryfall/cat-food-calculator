@@ -23,6 +23,12 @@
 
     <!-- css for custom -->
     <link rel="stylesheet" href="custom.css" />
+
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
 
   <body>
@@ -81,7 +87,7 @@
             </div>
           </div>
 
-          <fieldset>
+          <fieldset role="radiogroup">
             <legend>猫の状態</legend>
             <div class="grid">
               <label for="default">
@@ -117,27 +123,69 @@
         </section>
 
         <section>
-          <label for="food">餌</label>
-          <select
-            name="food"
-            aria-label="餌を選んでください"
-            id="food"
-            required
-          >
-            <option selected disabled id="unselected" value="unselected">
-              餌を選んでください
-            </option>
-          </select>
-          <small
-            ><a
-              id="food-link"
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              hidden
-              >商品ページ</a
-            ></small
-          >
+          <fieldset role="radiogroup">
+            <legend>餌</legend>
+            <label>
+              <input
+                type="radio"
+                id="food-select-drop-down"
+                name="food-select"
+                value="drop-down"
+                checked
+              />
+              プルダウンメニューから選ぶ
+            </label>
+
+            <label>
+              <input
+                type="radio"
+                id="food-select-input-number"
+                name="food-select"
+                value="input-number"
+              />
+              餌の量を入力する
+            </label>
+          </fieldset>
+
+          <div class="food-select hidden" data-panel="drop-down">
+            <label for="food">餌を選ぶ</label>
+            <select
+              name="food"
+              aria-label="餌を選んでください"
+              id="food"
+              required
+            >
+              <option selected disabled id="unselected" value="unselected">
+                餌を選んでください
+              </option>
+            </select>
+            <small
+              ><a
+                id="food-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                >商品ページ</a
+              ></small
+            >
+          </div>
+
+          <div class="food-select hidden" data-panel="input-number">
+            <label for="food-amount"
+              ><b>1日</b>にあげる餌の量<small>（○g）</small></label
+            >
+            <input
+              autocomplete="off"
+              id="food-amount"
+              max="1000"
+              min="1"
+              name="food-amount"
+              step="1"
+              type="number"
+            />
+            <small><b>1-500</b>の整数を入力</small>
+          </div>
 
           <fieldset>
             <legend>1日に餌をあげる回数</legend>

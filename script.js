@@ -11,6 +11,14 @@ async function loadJson(path) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // 餌選択の初期状態
+  const initialMode = document.querySelector(
+    'input[name="food-select"]:checked',
+  ).value;
+  const initialPanel = document.querySelector(`[data-panel="${initialMode}"]`);
+  if (initialPanel) initialPanel.classList.remove("hidden");
+
+  // 餌情報読み込み
   const food_info = await loadJson("./food_info.json");
   if (!food_info) return;
 
@@ -78,7 +86,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         10,
       );
 
-      // バリデーション
+      // 餌選択
+      const foodSelectMode = document.querySelector(
+        'input[name="food-select"]:checked',
+      ).value;
+
+      if (foodSelectMode === "input-number") {
+        // 自分で餌の量を入力する
+        const foodAmountRaw = document.getElementById("food-amount").value;
+
+        // 表示
+        if (foodAmountRaw === "") {
+          resultWarning.innerHTML = "<b>餌の量を入力してください</b>";
+          resultPerTime.innerHTML = "";
+          resultTotal.innerHTML = "";
+          return;
+        }
+
+        const totalAmount = parseInt(foodAmountRaw, 10);
+        const perTime = Math.round(totalAmount / times);
+
+        resultWarning.innerHTML = "";
+        resultTotal.innerHTML = `約<b>${totalAmount}</b>g`;
+        resultPerTime.innerHTML = `約<b>${perTime}</b>g`;
+        return;
+      }
+
+      // ドロップダウンメニューから餌を選択する
       if (food == "unselected") {
         resultWarning.innerHTML = "<b>餌を選んでください</b>";
         resultPerTime.innerHTML = "";
@@ -98,6 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         (minFeedingAmountsPerTime + maxFeedingAmountsPerTime) / 2,
       );
 
+      // 表示
       if (feedingAmounts[0] == -1 && feedingAmounts[1] == -1) {
         resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
         resultPerTime.innerHTML = "";
@@ -114,6 +149,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g（2値の平均は約<b>${average}</b>g）`;
       }
     });
+});
+
+// 餌選択
+const food_select_radios = document.querySelectorAll(
+  'input[type="radio"][name="food-select"]',
+);
+
+const food_select_panels = document.querySelectorAll(".food-select");
+
+food_select_radios.forEach((radio) => {
+  radio.addEventListener("change", function () {
+    const selected = this.value;
+
+    food_select_panels.forEach((panel) => {
+      panel.classList.add("hidden");
+    });
+
+    const target = document.querySelector(`[data-panel="${selected}"]`);
+    if (target) {
+      target.classList.remove("hidden");
+    }
+  });
 });
 
 // 計算
