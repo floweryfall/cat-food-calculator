@@ -1,12 +1,9 @@
 :root {
   --pico-font-family-sans-serif: sans-serif;
-}
-
-:host {
   --pico-font-size: 120%;
 }
 
-h1 {
+header {
   --pico-font-family: "Josefin Sans", sans-serif;
 }
 
