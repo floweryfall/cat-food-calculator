@@ -11,12 +11,28 @@ async function loadJson(path) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  setupValidation();
+
   // 餌選択の初期状態
   const initialMode = document.querySelector(
     'input[name="food-select"]:checked',
   ).value;
+
+  // 全て無効化
+  document.querySelectorAll(".food-select").forEach((panel) => {
+    panel
+      .querySelectorAll("input, select")
+      .forEach((el) => (el.disabled = true));
+  });
+
+  // 初期表示パネルだけ有効化
   const initialPanel = document.querySelector(`[data-panel="${initialMode}"]`);
-  if (initialPanel) initialPanel.classList.remove("hidden");
+  if (initialPanel) {
+    initialPanel.classList.remove("hidden");
+    initialPanel
+      .querySelectorAll("input, select")
+      .forEach((el) => (el.disabled = false));
+  }
 
   // 餌情報読み込み
   const food_info = await loadJson("./food_info.json");
@@ -64,12 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const weightRaw = document.getElementById("weight").value;
 
       // バリデーション
-      if (ageRaw === "" || weightRaw === "") {
-        resultWarning.innerHTML = "年齢と体重を入力してください";
-        resultPerTime.innerHTML = "";
-        resultTotal.innerHTML = "";
-        return;
-      } else if (monthsRaw === "") {
+      if (monthsRaw === "") {
         // 未入力時は0ヶ月とする
         monthsRaw = 0;
       }
@@ -91,21 +102,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         'input[name="food-select"]:checked',
       ).value;
 
+      // 餌の量を入力する
       if (foodSelectMode === "input-number") {
-        // 自分で餌の量を入力する
         const foodAmountRaw = document.getElementById("food-amount").value;
 
-        // 表示
-        if (foodAmountRaw === "") {
-          resultWarning.innerHTML = "餌の量を入力してください";
-          resultPerTime.innerHTML = "";
-          resultTotal.innerHTML = "";
-          return;
-        }
+        //if (foodAmountRaw === "") {
+        //  resultWarning.innerHTML = "餌の量を入力してください";
+        //  resultPerTime.innerHTML = "";
+        //  resultTotal.innerHTML = "";
+        //  return;
+        //}
 
         const totalAmount = parseInt(foodAmountRaw, 10);
         const perTime = Math.round(totalAmount / times);
 
+        // 表示
         resultWarning.innerHTML = "";
         resultTotal.innerHTML = `<b>1日</b>にあげる餌の量は約<b>${totalAmount}</b>g`;
         resultPerTime.innerHTML = `<b>1回</b>にあげる餌の量は約<b>${perTime}</b>g`;
@@ -151,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-// 餌選択
+// 餌の選択方法
 const food_select_radios = document.querySelectorAll(
   'input[type="radio"][name="food-select"]',
 );
@@ -162,16 +173,88 @@ food_select_radios.forEach((radio) => {
   radio.addEventListener("change", function () {
     const selected = this.value;
 
+    // 全パネルを非表示にし、フィールドを無効化
     food_select_panels.forEach((panel) => {
       panel.classList.add("hidden");
+      panel
+        .querySelectorAll("input, select")
+        .forEach((el) => (el.disabled = true));
     });
 
+    // 選択されたパネルを表示し、フィールドを有効化
     const target = document.querySelector(`[data-panel="${selected}"]`);
     if (target) {
       target.classList.remove("hidden");
+      target
+        .querySelectorAll("input, select")
+        .forEach((el) => (el.disabled = false));
     }
   });
 });
+
+// バリデーションメッセージ
+function setupValidation() {
+  const fields = [
+    {
+      el: document.getElementById("age"),
+      messages: {
+        valueMissing: "年齢を入力してください",
+        rangeUnderflow: "0以上の値を入力してください",
+        rangeOverflow: "30以下の値を入力してください",
+        badInput: "数値を入力してください",
+        stepMismatch: "整数を入力してください（例: 3）",
+      },
+    },
+    {
+      el: document.getElementById("months"),
+      messages: {
+        valueMissing: "月齢を入力してください",
+        rangeUnderflow: "0以上の値を入力してください",
+        rangeOverflow: "11以下の値を入力してください",
+        badInput: "数値を入力してください",
+        stepMismatch: "整数を入力してください（例: 3）",
+      },
+    },
+    {
+      el: document.getElementById("weight"),
+      messages: {
+        valueMissing: "体重を入力してください",
+        rangeUnderflow: "0.1以上の値を入力してください",
+        rangeOverflow: "20以下の値を入力してください",
+        badInput: "数値を入力してください",
+        stepMismatch: "小数第一位まで入力してください（例: 3.5）",
+      },
+    },
+    {
+      el: document.getElementById("food-amount"),
+      messages: {
+        rangeUnderflow: "1以上の値を入力してください",
+        rangeOverflow: "1000以下の値を入力してください",
+        badInput: "数値を入力してください",
+        stepMismatch: "整数を入力してください（例: 100）",
+      },
+    },
+  ];
+
+  fields.forEach(({ el, messages }) => {
+    // invalid イベント：メッセージを設定する
+    el.addEventListener("invalid", () => {
+      const v = el.validity;
+
+      if (v.valueMissing) el.setCustomValidity(messages.valueMissing ?? "");
+      else if (v.rangeUnderflow) el.setCustomValidity(messages.rangeUnderflow);
+      else if (v.rangeOverflow) el.setCustomValidity(messages.rangeOverflow);
+      else if (v.stepMismatch)
+        el.setCustomValidity(messages.stepMismatch ?? "");
+      else if (v.badInput) el.setCustomValidity(messages.badInput);
+      else el.setCustomValidity("");
+    });
+
+    el.addEventListener("input", () => {
+      el.setCustomValidity("");
+    });
+  });
+}
 
 // 計算
 function calcFood(
