@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // バリデーション
       if (ageRaw === "" || weightRaw === "") {
-        resultWarning.innerHTML = "<b>年齢と体重を入力してください</b>";
+        resultWarning.innerHTML = "年齢と体重を入力してください";
         resultPerTime.innerHTML = "";
         resultTotal.innerHTML = "";
         return;
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 表示
         if (foodAmountRaw === "") {
-          resultWarning.innerHTML = "<b>餌の量を入力してください</b>";
+          resultWarning.innerHTML = "餌の量を入力してください";
           resultPerTime.innerHTML = "";
           resultTotal.innerHTML = "";
           return;
@@ -107,14 +107,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const perTime = Math.round(totalAmount / times);
 
         resultWarning.innerHTML = "";
-        resultTotal.innerHTML = `約<b>${totalAmount}</b>g`;
-        resultPerTime.innerHTML = `約<b>${perTime}</b>g`;
+        resultTotal.innerHTML = `<b>1日</b>にあげる餌の量は約<b>${totalAmount}</b>g`;
+        resultPerTime.innerHTML = `<b>1回</b>にあげる餌の量は約<b>${perTime}</b>g`;
         return;
       }
 
       // ドロップダウンメニューから餌を選択する
       if (food == "unselected") {
-        resultWarning.innerHTML = "<b>餌を選んでください</b>";
+        resultWarning.innerHTML = "餌を選択";
         resultPerTime.innerHTML = "";
         resultTotal.innerHTML = "";
         return;
@@ -134,19 +134,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // 表示
       if (feedingAmounts[0] == -1 && feedingAmounts[1] == -1) {
-        resultWarning.innerHTML = "<b>この年齢には対応していません</b>";
+        resultWarning.innerHTML = "この年齢には対応していません";
         resultPerTime.innerHTML = "";
         resultTotal.innerHTML = "";
       } else if (feedingAmounts[1] == -1) {
         // 値が1つの場合
         resultWarning.innerHTML = "";
-        resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}</b>g`;
-        resultTotal.innerHTML = `約<b>${minFeedingAmounts}</b>g`;
+        resultPerTime.innerHTML = `<b>1回</b>にあげる餌の量は約<b>${minFeedingAmountsPerTime}</b>g`;
+        resultTotal.innerHTML = `<b>1日</b>にあげる餌の量は約<b>${minFeedingAmounts}</b>g`;
       } else {
         // 値が範囲の場合
         resultWarning.innerHTML = "";
-        resultPerTime.innerHTML = `約<b>${minFeedingAmountsPerTime}-${maxFeedingAmountsPerTime}</b>g（2値の平均は約<b>${averagePerTime}</b>g）`;
-        resultTotal.innerHTML = `約<b>${minFeedingAmounts}-${maxFeedingAmounts}</b>g（2値の平均は約<b>${average}</b>g）`;
+        resultPerTime.innerHTML = `<b>1回</b>にあげる餌の量は約<b>${minFeedingAmountsPerTime}</b>gから<b>${maxFeedingAmountsPerTime}</b>g（2値の平均は約<b>${averagePerTime}</b>g）`;
+        resultTotal.innerHTML = `<b>1日</b>にあげる餌の量は約<b>${minFeedingAmounts}</b>gから<b>${maxFeedingAmounts}</b>g（2値の平均は約<b>${average}</b>g）`;
       }
     });
 });

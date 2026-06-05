@@ -52,8 +52,10 @@
                 min="0"
                 name="age"
                 type="number"
+                aria-required="true"
+                aria-describedby="age-hint"
               />
-              <small><b>0-30</b>の整数を入力</small>
+              <small id="age-hint"><b>0</b>から<b>30</b>までの整数を入力</small>
             </div>
 
             <div>
@@ -66,9 +68,12 @@
                 name="months"
                 type="number"
                 value="0"
+                aria-required="false"
+                aria-describedby="months-hint"
               />
-              <small
-                ><b>0-11</b>の整数を入力 分からない場合は<b>0</b>と入力</small
+              <small id="months-hint"
+                ><b>0</b>から<b>11</b>までの整数を入力
+                分からない場合は<b>0</b>と入力</small
               >
             </div>
 
@@ -82,8 +87,13 @@
                 name="weight"
                 step="0.1"
                 type="number"
+                aria-required="true"
+                aria-describedby="weight-hint"
               />
-              <small><b>0.1-20.0</b>の小数第一位までの小数を入力</small>
+              <small id="weight-hint"
+                ><b>0.1</b
+                >から<b>20</b>までの小数第一位までの整数または小数を入力</small
+              >
             </div>
           </div>
 
@@ -123,8 +133,8 @@
         </section>
 
         <section>
-          <fieldset role="radiogroup">
-            <legend>餌</legend>
+          <fieldset>
+            <legend>餌の選択方法</legend>
             <label>
               <input
                 type="radio"
@@ -148,16 +158,9 @@
           </fieldset>
 
           <div class="food-select hidden" data-panel="drop-down">
-            <label for="food">餌を選ぶ</label>
-            <select
-              name="food"
-              aria-label="餌を選んでください"
-              id="food"
-              required
-            >
-              <option selected disabled id="unselected" value="unselected">
-                餌を選んでください
-              </option>
+            <label for="food">餌を選択</label>
+            <select name="food" id="food" required>
+              <option selected disabled value="">以下から餌を選択</option>
             </select>
             <small
               ><a
@@ -166,14 +169,14 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 hidden
-                >商品ページ</a
+                >選択した餌の商品ページへ移動する（外部リンク・別のタブで開きます）</a
               ></small
             >
           </div>
 
           <div class="food-select hidden" data-panel="input-number">
             <label for="food-amount"
-              ><b>1日</b>にあげる餌の量<small>（○g）</small></label
+              >1日にあげる餌の量<small>（○g）</small></label
             >
             <input
               autocomplete="off"
@@ -183,8 +186,12 @@
               name="food-amount"
               step="1"
               type="number"
+              aria-required="true"
+              aria-describedby="food-amount-hint"
             />
-            <small><b>1-500</b>の整数を入力</small>
+            <small id="food-amount-hint"
+              ><b>1</b>から<b>1000</b>までの整数を入力</small
+            >
           </div>
 
           <fieldset>
@@ -216,23 +223,15 @@
       </form>
 
       <!-- 結果の表示欄 -->
-      <section>
-        <h2>計算結果</h2>
-        <p id="result-warning"></p>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col"><b>1回</b>にあげる餌の量</th>
-              <th scope="col"><b>1日</b>にあげる餌の量</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="result-per-time"></td>
-              <td id="result-total"></td>
-            </tr>
-          </tbody>
-        </table>
+      <section aria-labelledby="result-heading">
+        <h2 id="result-heading">計算結果</h2>
+
+        <p id="result-warning" role="alert"></p>
+
+        <div aria-live="polite" aria-atomic="true">
+          <p id="result-total"></p>
+          <p id="result-per-time"></p>
+        </div>
       </section>
     </main>
 
