@@ -87,10 +87,10 @@
             </div>
           </div>
 
-          <fieldset role="radiogroup">
+          <fieldset>
             <legend>猫の状態</legend>
             <div class="grid">
-              <label for="default">
+              <label>
                 <input
                   type="radio"
                   id="status-default"
@@ -100,7 +100,7 @@
                 />
                 通常
               </label>
-              <label for="pregnancy">
+              <label>
                 <input
                   type="radio"
                   id="status-pregnancy"
@@ -109,7 +109,7 @@
                 />
                 妊娠期
               </label>
-              <label for="nursing">
+              <label>
                 <input
                   type="radio"
                   id="status-nursing"
@@ -191,10 +191,23 @@
             <legend>1日に餌をあげる回数</legend>
             <div class="grid">
               <label>
-                <input type="radio" name="times" value="2" checked />2回
+                <input
+                  type="radio"
+                  id="times-2"
+                  name="times"
+                  value="2"
+                  checked
+                />
+                2回
               </label>
-              <label> <input type="radio" name="times" value="3" />3回 </label>
-              <label> <input type="radio" name="times" value="4" />4回 </label>
+              <label>
+                <input type="radio" id="times-3" name="times" value="3" />
+                3回
+              </label>
+              <label>
+                <input type="radio" id="times-4" name="times" value="4" />
+                4回
+              </label>
             </div>
           </fieldset>
         </section>
