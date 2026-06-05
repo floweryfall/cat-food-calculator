@@ -204,7 +204,7 @@ function calcFood(
       break;
     case "beauty_pro_dry_kitten":
       if (isKitten) {
-        feedingAmounts = calcBeautyProDryKitten(months);
+        feedingAmounts = calcBeautyProDryKitten(months, weight);
       } else {
         feedingAmounts = [-1, -1];
       }
